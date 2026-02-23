@@ -1,0 +1,35 @@
+test_login_negative_zero ___________________________
+
+driver = <selenium.webdriver.chrome.webdriver.WebDriver (session="1f4b9d39ab268323e781921129e8d3a4")>
+
+    def test_login_negative_zero(driver):
+        """
+        Тест проверяет авторизацию по несуществующему номеру телефона.
+        :param driver: WebDriver — объект драйвера Selenium.
+        :param number: номер телефона пользователя.
+        :param seconds: время ожидания в секундах.
+        """
+        with allure.step("Авторизация на сайте онлайн-кинотеатра Кинопоиск"):
+            number = "0000000000"
+            seconds = "10"
+            log = Login(driver)
+            log.open_page()
+            sleep(40)
+            """
+            Параметр sleep для обхода вручную капчи на сайте.
+            """
+            log.waits(seconds)
+            log.login(number)
+            log.waits(seconds)
+    
+            mis = log.mistake()
+>           assert mis == 'Что-то пошло не так'
+E           AssertionError: assert 'Введите номер телефона' == 'Что-то пошло не так'
+E             
+E             - Что-то пошло не так
+E             + Введите номер телефона
+
+test\test_UI.py:72: AssertionError
+=========================== short test summary info ===========================
+FAILED test/test_UI.py::test_login_negative_zero - AssertionError: assert 'Вв...
+============================= 1 failed in 48.66s =====
