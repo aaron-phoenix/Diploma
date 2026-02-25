@@ -5,7 +5,7 @@ import allure
 
 @allure.epic("Авторизация")
 class Login:
-    def __init__(self, driver):
+    def __init__(self, driver) -> None:
         self.driver = driver
         """
         Конструктор класса Login.
@@ -13,7 +13,7 @@ class Login:
         """
 
     @allure.step("Открытие страницы онлайн-кинотеатра Кинопоиск")
-    def open_page(self):
+    def open_page(self) -> None:
         """
         Открывает страницу онлайн-кинотеатра Кинопоиск.
         Разворачивает окно браузера на максимум.
@@ -22,7 +22,7 @@ class Login:
         self.driver.maximize_window()
 
     @allure.step("Авторизация на сайте онлайн-кинотеатра Кинопоиск")
-    def login(self, number):
+    def login(self, number) -> None:
         """
         Открывает страницу с формой авторизации онлайн-кинотеатра Кинопоиск.
         Находит поле ввода номера телефона.
@@ -34,31 +34,36 @@ class Login:
         self.driver.find_element(By.CSS_SELECTOR,"a[href*='passport.yandex']").click()
         input = self.driver.find_element(By.CSS_SELECTOR,".ya_899deef4")
         input.send_keys(number)
-        self.driver.find_element(By.XPATH, "//*[@id='app']/div[2]/form/div[2]/div[2]/button/span").click()
+        self.driver.find_element(By.CSS_SELECTOR, '[data-testid="split-add-user-next-phone"]').click()
 
     @allure.step("Ожидание результата")
-    def waits(self, seconds):
+    def waits(self, seconds) -> None:
         """
         Ожидает загрузки страницы после авторизации.
-        Ожидаемый результат - загрузка html-тега body.
+        Ожидаемый результат - появление кнопки Войти.
         :param seconds: время ожидания в секундах
         
         """
         waiter = WebDriverWait(self.driver, seconds)
 
         waiter.until(
-        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "body"))
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "a[href*='passport.yandex']"))
     )
     
     @allure.step("Сообщение об ошибке при введении неправильного номера")
-    def mistake(self):
+    def mistake(self, seconds) -> str:
         """
         Возвращает сообщение об ошибке при введении неправильного номера телефона.
+        Ожидаемый результат - появление кнопки Войти.
+        :params seconds: ожидание появления сообщения об ошибке.
         """
+        waiter = WebDriverWait(self.driver, seconds)
+        waiter.until(
+            EC.text_to_be_present_in_element((By.CSS_SELECTOR, '.centered.page-header-text [data-color="primary"]'), "Что-то пошло не так"))
         return self.driver.find_element(By.CSS_SELECTOR, '.centered.page-header-text [data-color="primary"]').text
     
     @allure.step("Сообщение об ошибке при оставлении поле ввода пустым")
-    def mistake_empty(self):
+    def mistake_empty(self) -> str:
         """
         Возвращает сообщение об ошибке при оставлении поле ввода номера телефона пустым.
         """
@@ -67,7 +72,7 @@ class Login:
 
 
     @allure.step("Сообщение при успешной авторизации")
-    def success(self):
+    def success(self) -> str:
         """
         Возвращает текст сообщения при успешной авторизации.
         """

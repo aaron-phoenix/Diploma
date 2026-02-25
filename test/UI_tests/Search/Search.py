@@ -5,14 +5,14 @@ import allure
 
 @allure.epic("Поиск")
 class Search:
-    def __init__(self, driver):
+    def __init__(self, driver) -> None:
         self.driver = driver
         """
         Конструктор класса Search.
         :param driver: WebDriver — объект драйвера Selenium.
         """
     @allure.step("Открытие страницы онлайн-кинотеатра Кинопоиск")
-    def open_page(self):
+    def open_page(self) -> None:
         """
         Открывает страницу онлайн-кинотеатра Кинопоиск.
         Разворачивает окно браузера на максимум.
@@ -21,7 +21,7 @@ class Search:
         self.driver.maximize_window()
 
     @allure.step("Поиск фильма неавторизованным пользователем")
-    def search(self, data, time:int = 10):
+    def search(self, data, time:int = 10) -> None:
         """
         Находит иконку поиска и кликает на нее.
         Ожидает загрузку поля ввода значений для поиска.
@@ -40,13 +40,18 @@ class Search:
         input_field.send_keys(data)
 
     @allure.step("Проверка результата поиска на латиннице")
-    def check_l(self, expected_text, time:int = 10):
+    def check_l(self, expected_text, time:int = 15) -> str:
         """
         Проверяет результат поиска на латиннице.
         :param expected_text: ожидаемый результат поиска.
         :param time: int - значение по умолчанию - 10
         """
-        results = WebDriverWait(self.driver, time).until(
+        waiter = WebDriverWait(self.driver, time)
+
+        waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-tid="SuggestDropdownFooter"]'))
+     )
+        results = waiter.until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, "p.styles_title__BpljK"))
         )
         for result in results:
@@ -55,18 +60,36 @@ class Search:
         return None
     
     @allure.step("Проверка результата поиска на кириллице")
-    def check_k(self, expected_text1, time:int = 10):
+    def check_k(self, expected_text, time:int = 15) -> str:
         """
         Проверяет результат поиска на кириллице.
         :param expected_text: ожидаемый результат поиска.
         :param time: int - значение по умолчанию - 10
         """
-        results = WebDriverWait(self.driver, time).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//p[contains(text(), 'Игра престолов')]"))
+        waiter = WebDriverWait(self.driver, time)
+
+        waiter.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-tid="SuggestDropdownFooter"]'))
+     )
+        results = waiter.until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#suggest-item-0"))
         )
-        for result1 in results:
-            if expected_text1.lower() in result1.text.lower():
-                return result1.text
+        for result in results:
+            if expected_text.lower() in result.text.lower():
+                return result.text
         return None
     
+    @allure.step("Ожидание результата")
+    def waits(self, seconds) -> None:
+        """
+        Ожидает загрузки страницы после авторизации.
+        Ожидаемый результат - загрузка html-тега body.
+        :param seconds: время ожидания в секундах
+        
+        """
+        waiter = WebDriverWait(self.driver, seconds)
+
+        waiter.until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "body"))
+    )
    
