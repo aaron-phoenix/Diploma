@@ -1,8 +1,11 @@
 from API_tests.Search_API import Search_API
 from API_tests.conftest import api_headers, api_token, base_url
 import allure
+import pytest
 
 
+@pytest.mark.api
+@pytest.mark.positive
 @allure.epic("Тестирование Онлайн-кинотеатра Кинопоик")
 @allure.title("Получение списка фильмов онлайн-кинотеатра Кинопоиск")
 @allure.description("Тестирование проверяет работоспособность и адекватное поведение при ошибках API-запросов на сайте онлайн-кинотеатра Кинопоиск")
@@ -23,7 +26,8 @@ def test_get_films_positive(api_headers, base_url):
     body = resp.json()
     assert len(body) > 0
 
-
+@pytest.mark.api
+@pytest.mark.positive
 @allure.epic("Тестирование Онлайн-кинотеатра Кинопоик")
 @allure.title("Получение фильма по id")
 @allure.description("Тестирование проверяет работоспособность и адекватное поведение при ошибках API-запросов на сайте онлайн-кинотеатра Кинопоиск")
@@ -46,7 +50,8 @@ def test_get_film_id_positive(api_headers, base_url):
         with allure.step("Проверка статус-кода ответа"):
             api.assert_status_code(resp, 200)
 
-
+@pytest.mark.api
+# @pytest.mark.negative
 @allure.epic("Тестирование Онлайн-кинотеатра Кинопоик")
 @allure.title("Получение фильма с id=0")
 @allure.description("Тестирование проверяет работоспособность и адекватное поведение при ошибках API-запросов на сайте онлайн-кинотеатра Кинопоиск")
@@ -69,6 +74,8 @@ def test_get_film_id_negative(api_headers, base_url):
         with allure.step("Проверка статус-кода ответа"):
             api.assert_status_code(resp, 400)
 
+@pytest.mark.api
+@pytest.mark.negative
 @allure.epic("Тестирование Онлайн-кинотеатра Кинопоик")
 @allure.title("Получение фильма с id со строковым значением")
 @allure.description("Тестирование проверяет работоспособность и адекватное поведение при ошибках API-запросов на сайте онлайн-кинотеатра Кинопоиск")
@@ -92,6 +99,8 @@ def test_get_film_id_str_negative(api_headers, base_url):
         with allure.step("Проверка статус-кода ответа"):
             api.assert_status_code(resp, 400)
 
+@pytest.mark.api
+@pytest.mark.negative
 @allure.epic("Тестирование Онлайн-кинотеатра Кинопоик")
 @allure.title("Получение списка фильмов с неправильным методом post")
 @allure.description("Тестирование проверяет работоспособность и адекватное поведение при ошибках API-запросов на сайте онлайн-кинотеатра Кинопоиск")

@@ -1,7 +1,6 @@
 import pytest
-from pathlib import Path
-import os
 import allure
+
 @pytest.fixture(scope = "session")
 def api_token():
     try:
@@ -38,6 +37,20 @@ def base_url():
         
     except FileNotFoundError:
         pytest.fail("Файл url.txt не найден!")
+
+@pytest.fixture(scope = "session")
+def base_url1():
+    try:
+        with open("test/url1.txt", "r") as file:
+            url_base = file.read().strip()
+
+            if not url_base:
+                pytest.fail("Файл url1.txt пуст!")
+
+            return url_base
+        
+    except FileNotFoundError:
+        pytest.fail("Файл url1.txt не найден!")
 
 @pytest.fixture
 def check_status():

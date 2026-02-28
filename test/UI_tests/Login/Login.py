@@ -5,11 +5,13 @@ import allure
 
 @allure.epic("Авторизация")
 class Login:
-    def __init__(self, driver) -> None:
+    def __init__(self, driver, url) -> None:
         self.driver = driver
+        self.url = url
         """
         Конструктор класса Login.
         :param driver: WebDriver — объект драйвера Selenium.
+        :param url: сайт онлайн кинотеатра Кинопоиск.
         """
 
     @allure.step("Открытие страницы онлайн-кинотеатра Кинопоиск")
@@ -18,7 +20,7 @@ class Login:
         Открывает страницу онлайн-кинотеатра Кинопоиск.
         Разворачивает окно браузера на максимум.
         """
-        self.driver.get("https://hd.kinopoisk.ru")
+        self.driver.get(self.url)
         self.driver.maximize_window()
 
     @allure.step("Авторизация на сайте онлайн-кинотеатра Кинопоиск")
